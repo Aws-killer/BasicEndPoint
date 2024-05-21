@@ -4,11 +4,15 @@ FROM python:3.9-slim
 # Set the working directory within the container
 WORKDIR /srv
 
-# Copy the requirements file into the container
-COPY . /srv
+COPY requirements.txt .
 
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the requirements file into the container
+COPY . /srv
+
+
 
 
 
