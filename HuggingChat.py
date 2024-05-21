@@ -9,20 +9,17 @@ sign = Login(email, passwd)
 cookies = sign.login()
 
 # # Save cookies to the local directory
-cookie_path_dir = "App/utils/cookies"
+cookie_path_dir = "./cookies"
 sign.saveCookiesToDir(cookie_path_dir)
 
 # Load cookies when you restart your program:
 # sign = login(email, None)
 cookies = sign.loadCookiesFromDir(cookie_path_dir)
-print(cookies.get_dict())
+
 
 # Create a ChatBot
 chatbot = hugchat.ChatBot(
-    cookies={
-        "hf-chat": "831aa60e-832c-4bc8-9609-feee1a63cabd",
-        "token": "kybodoshVPnQLMIerSDRJjgLMnsoldLxjyoYHTdTsNWGXmOmdiGmQqjIXHDbwulMYnRqpnHkhwTcebrfTMxwXcVjLOfcPShwAJGzWwDTXjnxewKGgHICpagCZhnotfKA",
-    },
+    cookies=cookies,
     system_prompt="You are  a true creative master genius and a great story teller that keeps the viewer/listener engauged. Make sure that you narrate the sequence of events properly so that the listener can understand. Use smart/insiteful quotes from the book. Don't speak to the viewers just tell the story accurately. Each scene should carry one topic and if the narration is long add more image_prompts, by default a short naration should have  2 image_prompts",
 )
 

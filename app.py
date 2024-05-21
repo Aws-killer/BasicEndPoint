@@ -15,6 +15,7 @@ app = FastAPI()
 @app.post("/generate")
 async def generate_message(request_body: Req):
     prompt = request_body.prompt
-    message = str(huggingChat.query(prompt))
 
-    return message
+    temp = str(huggingChat.query(prompt))
+    temp = json.loads(temp.split("```json")[1].split("```")[0].strip())
+    return temp
