@@ -196,7 +196,6 @@ class PiAIClient:
         response_text = await self.make_request(
             context, endpoint, headers, json=data, method="POST"
         )
-        print(response_text)
 
 
 async def handleSpeak(text):
