@@ -198,6 +198,53 @@ class PiAIClient:
         )
 
 
+import requests
+
+
+def speak_response(
+    message_sid: str, voice: VoiceType = VoiceType.voice4, cookie: str = None
+) -> None:
+    headers = {
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/113.0",
+        "Accept": "audio/webm,audio/ogg,audio/wav,audio/*;q=0.9,application/ogg;q=0.7,video/*;q=0.6,*/*;q=0.5",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Range": "bytes=0-",
+        "Connection": "keep-alive",
+        "Referer": "https://pi.ai/talk",
+        "Cookie": cookie,
+        "Sec-Fetch-Dest": "audio",
+        "Sec-Fetch-Mode": "no-cors",
+        "Sec-Fetch-Site": "same-origin",
+        "DNT": "1",
+        "Sec-GPC": "1",
+        "Accept-Encoding": "identity",
+        "TE": "trailers",
+    }
+    print(
+        f"https://pi.ai/api/chat/voice?messageSid={message_sid}&voice=qdpi&mode=eager"
+    )
+    response = requests.get(
+        f"https://pi.ai/api/chat/voice?messageSid={message_sid}&voice=qdpi&mode=eager",
+        headers=headers,
+        stream=True,
+    )
+    print(response.headers)
+    # Ensure the request was successful
+
+    if response.status_code == 200:
+        # Open a .wav file in write-binary mode
+        with open("speak.wav", "wb") as file:
+            # Write the contents of the response to the file
+            for chunk in response.iter_content(chunk_size=128):
+                file.write(chunk)
+
+        # run command vlc to play the audio file
+        os.system("vlc speak.wav --intf dummy --play-and-exit")
+
+    else:
+        print("Error: Unable to retrieve audio.")
+
+
 async def handleSpeak(text):
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
@@ -207,8 +254,7 @@ async def handleSpeak(text):
         print(response_texts, response_sids)
         await client.trigger_event(context)
         if response_sids:
-            await client.speak_response(context, response_sids[0])
-        await browser.close()
+            speak_response(context, response_sids[0], client.cookie)
 
 
 # # To run the handleSpeak function:
