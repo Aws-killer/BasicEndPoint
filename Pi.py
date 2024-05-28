@@ -1,9 +1,24 @@
 import asyncio
 import os
-from functools import cache
 import enum
 import requests
 from playwright.async_api import async_playwright, Page, Browser, BrowserContext
+
+import functools
+
+
+def memoize(func):
+    cache = {}
+
+    @functools.wraps(func)
+    def wrapper(*args):
+        if args in cache:
+            return cache[args]
+        result = func(*args)
+        cache[args] = result
+        return result
+
+    return wrapper
 
 
 class VoiceType(enum.Enum):
@@ -50,7 +65,7 @@ class PiAIClient:
             "Cache-Control": "no-cache",
         }
 
-    @cache
+    @memoize
     async def get_cookie(self, context: BrowserContext) -> str:
         headers = self.headers.copy()
         page = await context.new_page()
