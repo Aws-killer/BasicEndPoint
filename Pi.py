@@ -157,6 +157,41 @@ class PiAIClient:
                 else:
                     print("Error: Unable to retrieve audio.")
 
+    async def trigger_event(self):
+        if self.cookie is None:
+            self.cookie = await self.get_cookie()
+
+        headers = {
+            "accept": "*/*",
+            "accept-language": "en-US,en;q=0.9",
+            "cache-control": "no-cache",
+            "content-type": "text/plain",
+            "cookie": self.cookie,
+            "origin": "https://pi.ai",
+            "pragma": "no-cache",
+            "priority": "u=1, i",
+            "referer": "https://pi.ai/talk",
+            "sec-ch-ua": '"Google Chrome";v="125", "Chromium";v="125", "Not.A/Brand";v="24"',
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": '"Windows"',
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+        }
+        data = {
+            "n": "voice:audio-on",
+            "u": "https://pi.ai/talk",
+            "d": "pi.ai",
+            "r": None,
+        }
+
+        endpoint = "https://pi.ai/proxy/api/event"
+        response_text = await self.make_request(
+            endpoint, headers, json=data, method="POST"
+        )
+        print(response_text)
+
 
 def speak_response(
     message_sid: str, voice: VoiceType = VoiceType.voice4, cookie: str = None
@@ -181,7 +216,7 @@ def speak_response(
         f"https://pi.ai/api/chat/voice?messageSid={message_sid}&voice=qdpi&mode=eager"
     )
     response = requests.get(
-        f"https://pi.ai/api/chat/voice?messageSid={message_sid}&voice=qdpi&mode=eager",
+        f"https://heypi.com/api/chat/voice?messageSid={message_sid}&voice=qdpi&mode=eager",
         headers=headers,
         stream=True,
     )
@@ -190,7 +225,7 @@ def speak_response(
 
     if response.status_code == 200:
         # Open a .wav file in write-binary mode
-        with open("speak.wav", "wb") as file:
+        with open("asdasd.wav", "wb") as file:
             # Write the contents of the response to the file
             for chunk in response.iter_content(chunk_size=128):
                 file.write(chunk)
@@ -203,5 +238,6 @@ async def handleSpeak(text):
     client = PiAIClient()
     response_texts, response_sids = await client.get_response(text)
     print(response_texts, response_sids)
+    await client.trigger_event()
     if response_sids:
         speak_response(response_sids[0], cookie=client.cookie)
