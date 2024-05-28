@@ -3,7 +3,21 @@ import asyncio
 import enum
 import requests
 import os
-from functools import cache
+import functools
+
+
+def cachex(func):
+    cache = {}
+
+    @functools.wraps(func)
+    def wrapper(*args):
+        if args in cache:
+            return cache[args]
+        result = func(*args)
+        cache[args] = result
+        return result
+
+    return wrapper
 
 
 class VoiceType(enum.Enum):
@@ -51,7 +65,7 @@ class PiAIClient:
             "Cache-Control": "no-cache",
         }
 
-    @cache
+    @cachex
     async def get_cookie(self) -> str:
         headers = self.headers.copy()
         async with aiohttp.ClientSession() as session:
