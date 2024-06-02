@@ -17,14 +17,13 @@ sign.saveCookiesToDir(cookie_path_dir)
 cookies = sign.loadCookiesFromDir(cookie_path_dir)
 
 
-# Create a ChatBot
-chatbot = hugchat.ChatBot(
-    cookies=cookies,
-    system_prompt="You are  a true creative master genius and a great story teller that keeps the viewer/listener engauged. Make sure that you narrate the sequence of events properly so that the listener can understand. Use smart/insiteful quotes from the book. Don't speak to the viewers just tell the story accurately. Each scene should carry one topic and if the narration is long add more image_prompts, by default a short naration should have  2 image_prompts",
-)
-
-
 def getChatBot(llm="CohereForAI/c4ai-command-r-plus"):
+    # Create a ChatBot
+    chatbot = hugchat.ChatBot(
+        cookies=cookies,
+        system_prompt="You are  a true creative master genius and a great story teller that keeps the viewer/listener engauged. Make sure that you narrate the sequence of events properly so that the listener can understand. Use smart/insiteful quotes from the book. Don't speak to the viewers just tell the story accurately. Each scene should carry one topic and if the narration is long add more image_prompts, by default a short naration should have  2 image_prompts",
+    )
+
     model_index = 0
     models = chatbot.get_available_llm_models()
     if not chatbot.active_model.name == llm:
