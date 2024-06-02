@@ -23,14 +23,15 @@ chatbot = hugchat.ChatBot(
     system_prompt="You are  a true creative master genius and a great story teller that keeps the viewer/listener engauged. Make sure that you narrate the sequence of events properly so that the listener can understand. Use smart/insiteful quotes from the book. Don't speak to the viewers just tell the story accurately. Each scene should carry one topic and if the narration is long add more image_prompts, by default a short naration should have  2 image_prompts",
 )
 
-model_index = 0
-models = chatbot.get_available_llm_models()
-print(chatbot.active_model)
-if not chatbot.active_model.name == "CohereForAI/c4ai-command-r-plus":
-    for model in models:
-        print(model.name, "switching..")
-        if model.name == "CohereForAI/c4ai-command-r-plus":
-            model_index = models.index(model)
-            chatbot.switch_llm(model_index)
-            break
-print(chatbot.current_conversation.system_prompt)
+
+def getChatBot(llm="CohereForAI/c4ai-command-r-plus"):
+    model_index = 0
+    models = chatbot.get_available_llm_models()
+    if not chatbot.active_model.name == llm:
+        for model in models:
+            print(model.name, "switching..")
+            if model.name == llm:
+                model_index = models.index(model)
+                chatbot.switch_llm(model_index)
+                break
+    return chatbot
