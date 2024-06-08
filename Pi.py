@@ -158,9 +158,7 @@ class PiAIClient:
                     with open(file_path, "wb") as file:
                         async for chunk in response.content.iter_chunked(128):
                             file.write(chunk)
-                    return {
-                        "url": f"https://yakova-embedding.hf.space/audio/{file_name}"
-                    }
+                    return {"url": f"/audio/{file_name}"}
                     # Run command vlc to play the audio file
                     # os.system("vlc speak.wav --intf dummy --play-and-exit")
                 else:
