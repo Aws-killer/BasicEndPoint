@@ -3,3 +3,4 @@ aiohttp
 hugchat
 pydantic
 TikTokApi
+aiofiles

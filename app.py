@@ -4,12 +4,21 @@ import aiohttp
 from HuggingChat import getChatBot
 import json
 from pydantic import BaseModel
-from Pi import handleSpeak
+from Pi import PiAIClient
+import aiofiles
+from typing import List, Optional
+
+pi = PiAIClient()
 
 
 class Req(BaseModel):
     prompt: str
     llm: str = "CohereForAI/c4ai-command-r-plus"
+
+
+class PiTTSRequest(BaseModel):
+    text: str
+    voice: Optional[str]
 
 
 class Speaker(BaseModel):
@@ -29,7 +38,5 @@ async def generate_message(request_body: Req):
 
 
 @app.post("/speak")
-async def generate_speak(request_body: Speaker):
-    prompt = request_body.text
-
-    return await handleSpeak(prompt)
+async def pi_tts(req: PiTTSRequest):
+    return await pi.say(text=req.text, voice=req.voice)
