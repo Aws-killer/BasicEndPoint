@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 import aiohttp
 
-from HuggingChat import getChatBot
+# from HuggingChat import getChatBot
 import json
 from pydantic import BaseModel
 from Pi import PiAIClient
@@ -28,13 +28,13 @@ class Speaker(BaseModel):
 app = FastAPI()
 
 
-@app.post("/generate")
-async def generate_message(request_body: Req):
-    prompt = request_body.prompt
-    huggingChat = getChatBot(request_body.llm)
-    temp = str(huggingChat.query(prompt))
-    temp = json.loads(temp.split("```json")[1].split("```")[0].strip())
-    return temp
+# @app.post("/generate")
+# async def generate_message(request_body: Req):
+#     prompt = request_body.prompt
+#     huggingChat = getChatBot(request_body.llm)
+#     temp = str(huggingChat.query(prompt))
+#     temp = json.loads(temp.split("```json")[1].split("```")[0].strip())
+#     return temp
 
 
 @app.post("/speak")
